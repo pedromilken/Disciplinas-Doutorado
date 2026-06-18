@@ -1,0 +1,71 @@
+{
+  "ARI": 0.0799,
+  "NMI": 0.2882,
+  "homogeneity": 0.5415,
+  "completeness": 0.1963,
+  "confusion": {
+    "0": {
+      "H\u00e9xon": 2721,
+      "IIIa": 36,
+      "IX": 67,
+      "P\u00e9nton": 0,
+      "VI": 0,
+      "VII": 0,
+      "VIII": 204
+    },
+    "1": {
+      "H\u00e9xon": 2735,
+      "IIIa": 0,
+      "IX": 96,
+      "P\u00e9nton": 0,
+      "VI": 0,
+      "VII": 0,
+      "VIII": 119
+    },
+    "2": {
+      "H\u00e9xon": 2727,
+      "IIIa": 0,
+      "IX": 51,
+      "P\u00e9nton": 0,
+      "VI": 91,
+      "VII": 11,
+      "VIII": 0
+    },
+    "3": {
+      "H\u00e9xon": 2740,
+      "IIIa": 0,
+      "IX": 0,
+      "P\u00e9nton": 19,
+      "VI": 28,
+      "VII": 0,
+      "VIII": 3
+    },
+    "4": {
+      "H\u00e9xon": 2,
+      "IIIa": 0,
+      "IX": 0,
+      "P\u00e9nton": 421,
+      "VI": 0,
+      "VII": 0,
+      "VIII": 0
+    },
+    "5": {
+      "H\u00e9xon": 0,
+      "IIIa": 252,
+      "IX": 0,
+      "P\u00e9nton": 15,
+      "VI": 0,
+      "VII": 0,
+      "VIII": 34
+    },
+    "6": {
+      "H\u00e9xon": 0,
+      "IIIa": 0,
+      "IX": 172,
+      "P\u00e9nton": 0,
+      "VI": 0,
+      "VII": 0,
+      "VIII": 0
+    }
+  }
+}
