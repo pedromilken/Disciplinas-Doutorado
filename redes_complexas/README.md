@@ -28,8 +28,13 @@ pip install -r requirements.txt
 | `protein_net.py` | Biblioteca: fetch/parse PDB, rede de contatos, topologia, Louvain, validação |
 | `viz.py` | Figuras (graus, centralidades, rede 2D/3D, estabilidade, matriz de confusão) |
 | `make_synthetic.py` | Gera proteína sintética com domínios plantados (*ground truth*) |
-| `run_experiments.py` | Reproduz todos os casos do relatório (SYNTH, 1A8O, 2BEG, 2HHB) |
-| `run_pipeline.py` | CLI geral para rodar qualquer proteína (inclui o alvo 6B1T) |
+| `run_experiments.py` | Reproduz todos os casos de teste do relatório (SYNTH, 1A8O, 2BEG, 2HHB) |
+| `run_pipeline.py` | CLI geral para rodar qualquer proteína |
+| `run_6b1t.py` | Alvo 6B1T: topologia, varredura de γ (sensibilidade) e figuras, com **γ fixo = 0,2** |
+| `derive_trimers_g02.py` | Validação por trímero/capsômero em **γ = 0,2** (manchete) e γ = 0,1 (sensibilidade) |
+| `edge_ablation.py` | Ablação dos critérios de aresta (topo / contacts / physchem / Cα) |
+| `fetch_rcsb_metadata.py` | Anotação oficial via API do RCSB (cadeia → proteína/UniProt) |
+| `MIGRATION.md` | Guia da revisão: o que adicionar, substituir e descartar |
 
 ## Reproduzir os resultados do relatório
 
@@ -79,14 +84,26 @@ scripts constroem o grafo a partir dele automaticamente e cacheiam em
 
 ```bash
 # com data/6B1T.cif presente:
-python run_6b1t.py              # topologia, varredura de γ, Louvain, figuras
-python derive_trimers_6b1t.py   # anotação por trímero + validação (ARI ≈ 0,89)
+python run_6b1t.py              # topologia, varredura de γ (sensibilidade), Louvain, figuras
+python derive_trimers_g02.py    # validação por trímero/capsômero (γ fixo = 0,2)
+python edge_ablation.py --pdb data/6B1T.cif \
+       --truth data/6B1T_trimer_truth.json --gamma 0.2   # ablação de arestas
 python validate_official_6b1t.py  # validação contra as 8 famílias wwPDB
 ```
 
-Resultado: Q = 0,90 (γ=1); em γ=0,1 as comunidades reproduzem os 4 trímeros de
-héxon + base do pénton + proteínas menores, com **ARI = 0,89** (NMI = 0,86).
-Saídas em `data/6B1T_results.json` e `data/6B1T_trimer.json`.
+**Fixação de parâmetros (sem ajuste no alvo).** A resolução γ é fixada nas
+moléculas de teste, não escolhida no 6B1T. Na hemoglobina (2HHB), γ = 0,2 recupera
+as 4 cadeias montadas (escala de subunidade); esse mesmo γ = 0,2 é aplicado ao
+alvo, onde corresponde à escala de capsômero. A varredura de γ no 6B1T entra
+apenas como análise de sensibilidade.
+
+Resultado: Q = 0,90 (γ = 1, 30 comunidades, escala fina). Na escala de capsômero
+(γ = 0,2, fixo), as comunidades reproduzem os 4 trímeros de héxon + base do pénton
++ proteínas menores, com **ARI = 0,812** (NMI = 0,826). Como sensibilidade, γ = 0,1
+dá ARI = 0,890. A ablação mostra que a definição de aresta importa muito (átomos
+pesados a 5 Å: ARI 0,81 a 0,86; Cα a 8 Å: 0,56), enquanto a ponderação
+físico-química altera a partição sem melhorar a recuperação. Saídas em
+`6B1T_results.json`, `6B1T_trimer_g02.json` e `ablation_results.json`.
 
 ### Anotação oficial via API do RCSB (opcional)
 
@@ -102,7 +119,8 @@ python run_pipeline.py --pdb 6B1T --annotation data/6B1T_annotation.csv
 
 A validação contra a anotação oficial wwPDB (8 famílias) é reproduzida por
 `validate_official_6b1t.py`. O `.cif` e o PDB bundle produzem redes idênticas
-(12.544 nós, 73.276 arestas).
+(12.544 nós, 73.276 arestas). A identificação do pénton foi verificada contra o
+RCSB: cadeia M (proteína de base do pénton, UniProt P12538, 571 resíduos).
 
 ## Notas de desempenho
 
