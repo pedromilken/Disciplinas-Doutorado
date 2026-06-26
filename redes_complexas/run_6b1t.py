@@ -71,13 +71,14 @@ for g in [0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0]:
                  round(vc["ARI"],3), round(vc["NMI"],3)])
     print(f"  g={g:<4} k={k:<3} Q={Q:.3f} | macro ARI={vm['ARI']:.3f} NMI={vm['NMI']:.3f} | chain ARI={vc['ARI']:.3f} NMI={vc['NMI']:.3f}")
 
-# escolhe gamma cujo k melhor casa com nº de cadeias (25) p/ validação de cadeia
-best_chain = min(rows, key=lambda r: (abs(r[1]-25), -r[5]))
-g_chain = best_chain[0]
-# e gamma que melhor separa macro (3 famílias) -> ARI macro máx
-best_macro = max(rows, key=lambda r: r[3])
-g_macro = best_macro[0]
-print("melhor g p/ cadeia:", g_chain, "| melhor g p/ macro:", g_macro)
+# gamma FIXADO na calibração das moléculas-teste (hemoglobina, escala de
+# subunidade montada), aplicado ao alvo SEM otimizar a anotação do próprio 6B1T.
+# A varredura acima (rows) serve apenas como análise de sensibilidade.
+g_macro = 0.2   # escala de capsômero (trímero de héxon / base do pénton)
+g_chain = 0.2   # mesma resolução; cadeias individuais não são separadas dos
+                # trímeros nessa escala, o que é o comportamento esperado.
+print("gamma fixado (calibrado na hemoglobina):", g_macro,
+      "| varredura acima = sensibilidade")
 
 # ---- estabilidade (em g=1) ----
 t = time.time()
